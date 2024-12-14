@@ -52,6 +52,7 @@ def msg_encode (uncoded_msg, syndrome, check_bits):
 
 def hamming_encoder (msg_data):
 
+    print('input_data:', msg_data)
     frame_param = enc_parameter_calc(msg_data)
     frame = create_frame(msg_data, frame_param[0], frame_param[1], frame_param[2])
     index_list = frame_find_ones(frame)
@@ -79,5 +80,5 @@ def enc_parameter_calc(msg_data):
     #print('msg_width',msg_w)
     return msg_w, check_bits, bits_added
 
-#hamming_encoder(57)
+hamming_encoder(57)
 
