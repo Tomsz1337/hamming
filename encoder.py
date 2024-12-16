@@ -6,13 +6,13 @@ import math
 def create_frame (data, msg_width, check_bits, bits_added):
 
     frame = int2ba(data, endian='little')
-    #print('raw_frame', frame)
+    print('raw_frame', frame)
     for i in range (bits_added):
         bitarray.insert(frame, msg_width + i, 0)
-    #print('frame_added_bits',frame)
+    print('frame_added_bits',frame)
     for i in range (check_bits):
         bitarray.insert(frame, 2**i - 1, 0)
-    #print('frame_w_fillers',frame)
+    print('frame_w_fillers',frame)
     return frame 
 
 def frame_find_ones (data_frame):
@@ -22,7 +22,7 @@ def frame_find_ones (data_frame):
     for i in range(len(data_frame)):
         if(data_frame[i] == 1):
             index_list.append(i + 1)
-    #print('index list', index_list)
+    print('index list', index_list)
     return index_list
 
 def index_xor (index_list):
@@ -31,7 +31,7 @@ def index_xor (index_list):
 
     for i in range (1,len(index_list)):
         syndrome = syndrome ^ index_list[i]
-    #print('syndrome', syndrome)
+    print('syndrome', syndrome)
     return syndrome
 
 def msg_encode (uncoded_msg, syndrome, check_bits):
@@ -40,10 +40,11 @@ def msg_encode (uncoded_msg, syndrome, check_bits):
 
     for i in range (check_bits):
         bitarray.pop(coded_msg, 2**((check_bits -1)-i) - 1)
-
+    print(coded_msg)
     synd_list = int2ba(syndrome, endian='little')
-    synd_list.append(0)
-    #print('synd_list', synd_list)
+    while len(synd_list) < 8:
+        synd_list.append(0)
+    print('synd_list', synd_list)
     for i in range (check_bits):
         bitarray.insert(coded_msg, 2**i -1, synd_list[i])
 
@@ -70,7 +71,7 @@ def checksum(encoded_frame):
 def enc_parameter_calc(msg_data):
 
     msg = int2ba(msg_data, endian='little')
-    bits_added = bitarray.fill(msg)
+    bits_added = bit_adder(msg)
     #print('bits added' ,bits_added)
     data_w = len(msg)
     #print('data_width',data_w)
@@ -80,5 +81,32 @@ def enc_parameter_calc(msg_data):
     #print('msg_width',msg_w)
     return msg_w, check_bits, bits_added
 
-hamming_encoder(57)
+def bit_adder(msg):
+    l1 = len(msg)
+    if len(msg) < 8:
+        while len(msg) < 8:
+            bitarray.append(msg,0)
+    elif len(msg) < 16 :
+        while len(msg) < 16:
+            bitarray.append(msg,0)
+    elif len(msg) < 32 :
+        while len(msg) < 32:
+            bitarray.append(msg,0)
+    elif len(msg) < 64 :
+        while len(msg) < 64:
+            bitarray.append(msg,0)
+    l2 = len(msg)
+    return l2 - l1
+
+def encoder_test(i):
+    try:
+        hamming_encoder(i)
+    except:
+        
+        print('error',i)
+
+#bit_adder(int2ba(1952805748, endian='little'))
+#for i in range (255):
+#    encoder_test(i)
+#hamming_encoder(57)
 
