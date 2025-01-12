@@ -2,7 +2,7 @@ from bitarray import bitarray
 from bitarray.util import ba2int
 from encoder import frame_find_ones, index_xor
 import math
-from functools import reduce
+
 
 rx_data = bitarray('111100101110', endian='little')
 
@@ -81,6 +81,7 @@ def hamming_decoder(received_data):
     data = msg_translate(corrected_frame, check_bits)
     print('received frame:',data)
     print('received data int:', ba2int(data))
+    return ba2int(data)
     
 def syndrome_extract_test():
     syndrome_int = 0
@@ -91,5 +92,4 @@ def syndrome_extract_test():
     print(syndrome_int)
     return syndrome_int
 
-hamming_decoder(rx_data)
-#syndrome_extract_test()
+#hamming_decoder(rx_data)
